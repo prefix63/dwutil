@@ -5,6 +5,9 @@ use tracing_subscriber::FmtSubscriber;
 #[cfg(test)]
 mod hash;
 
+#[cfg(test)]
+mod cas;
+
 static INIT: Once = Once::new();
 
 fn init_tracing() {
