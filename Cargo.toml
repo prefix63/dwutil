@@ -7,7 +7,7 @@ edition = "2024"
 tokio = { version = "1.37", features = ["rt", "sync"] }
 ureq = "2.9"
 tracing = "0.1"
-indicatif = "0.17"
+indicatif = { version = "0.17", optional = true }
 flate2 = { version = "1.0", features = ["rust_backend"] } # evita dependencias nativas
 tar = "0.4"
 zip = "0.6"
@@ -32,3 +32,4 @@ tracing-subscriber = { version = "0.3.19", features = ["fmt"] }
 default = ["sha", "md5"]
 sha = ["dep:sha1", "dep:sha2", "dep:hex"]
 md5 = ["dep:md5", "dep:hex"]
+indicatif = ["dep:indicatif"]
