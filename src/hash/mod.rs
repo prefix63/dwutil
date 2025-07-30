@@ -1,5 +1,6 @@
-use std::{fs, path::Path};
+use std::{fs, hash::DefaultHasher, path::Path};
 
+use std::hash::Hasher as RustHasher;
 use tracing::{debug, error, warn};
 
 #[cfg(feature = "sha")]
@@ -11,6 +12,16 @@ pub mod md5;
 pub trait Hasher {
     type Err: std::fmt::Display;
     fn compute(bytes: &[u8]) -> Result<String, Self::Err>;
+}
+
+impl Hasher for std::hash::DefaultHasher {
+    type Err = String;
+    fn compute(bytes: &[u8]) -> Result<String, Self::Err> {
+        let mut hasher = DefaultHasher::new();
+        hasher.write(bytes);
+        let hash = hasher.finish();
+        Ok(hex::encode(hash.to_be_bytes()))
+    }
 }
 
 pub struct Hash<H: Hasher> {
