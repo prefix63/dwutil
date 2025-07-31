@@ -31,7 +31,7 @@ tempfile = "3.20.0"
 tracing-subscriber = { version = "0.3.19", features = ["fmt"] }
 
 [features]
-default = ["sha", "md5", "zip", "targz", "tarxz"]
+default = ["sha", "md5", "zip", "targz"]
 sha = ["dep:sha1", "dep:sha2"]
 md5 = ["dep:md5"]
 indicatif = ["dep:indicatif"]
