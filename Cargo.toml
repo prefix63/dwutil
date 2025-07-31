@@ -8,13 +8,15 @@ tokio = { version = "1.37", features = ["rt", "sync"] }
 ureq = "2.9"
 tracing = "0.1"
 indicatif = { version = "0.17", optional = true }
-flate2 = { version = "1.0", features = ["rust_backend"] } # evita dependencias nativas
-tar = "0.4"
-zip = "0.6"
+flate2 = { version = "1.0", features = ["rust_backend"], optional = true } # evita dependencias nativas
+tar = { version = "0.4", optional = true }
+zip = { version = "0.6", optional = true }
 sha1 = { version = "0.10.6", optional = true }
 sha2 = { version = "0.10.9", optional = true }
 md5 = { version = "0.8.0", optional = true }
 hex = { version = "0.4.3" }
+infer = { version = "0.19.0", optional = true }
+xz2 = { version = "0.1.7", optional = true }
 
 [profile.release]
 opt-level = "z"           # optimiza para tamaño
@@ -29,8 +31,13 @@ tempfile = "3.20.0"
 tracing-subscriber = { version = "0.3.19", features = ["fmt"] }
 
 [features]
-default = ["sha", "md5"]
+default = ["sha", "md5", "zip", "targz"]
 sha = ["dep:sha1", "dep:sha2"]
 md5 = ["dep:md5"]
 indicatif = ["dep:indicatif"]
-
+gz = ["dep:flate2", "dep:infer"]
+zip = ["dep:zip", "dep:infer"]
+tar = ["dep:tar", "dep:infer"]
+xz = ["dep:xz2", "dep:infer"]
+targz = ["tar", "gz"]
+tarxz = ["tar", "xz"]

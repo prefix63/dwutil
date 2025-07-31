@@ -1,4 +1,5 @@
 pub mod cas;
+pub mod decompress;
 pub mod hash;
 pub mod indicator;
 
