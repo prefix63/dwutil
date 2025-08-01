@@ -58,7 +58,7 @@ impl Indicator for SimpleIndicator {
     fn stage(&mut self, stage: String) {
         self.bar.set_message(stage);
     }
-    fn update(&mut self, bytes: usize) {
-        self.bar.set_position(bytes as u64);
+    fn update(&mut self, bytes: u64) {
+        self.bar.set_position(bytes);
     }
 }

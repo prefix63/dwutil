@@ -9,14 +9,16 @@ pub mod sha;
 #[cfg(feature = "md5")]
 pub mod md5;
 
+/// Common trait for the hashers
 pub trait Hasher {
-    type Err: std::fmt::Display;
-    fn compute(bytes: &[u8]) -> Result<String, Self::Err>;
+    /// Calculate a hash from bytes
+    fn compute(bytes: &[u8]) -> Result<String, String>
+    where
+        Self: Sized;
 }
 
 impl Hasher for std::hash::DefaultHasher {
-    type Err = String;
-    fn compute(bytes: &[u8]) -> Result<String, Self::Err> {
+    fn compute(bytes: &[u8]) -> Result<String, String> {
         let mut hasher = DefaultHasher::new();
         hasher.write(bytes);
         let hash = hasher.finish();
@@ -24,19 +26,26 @@ impl Hasher for std::hash::DefaultHasher {
     }
 }
 
-pub struct Hash<H: Hasher> {
+/// Hash check configuration
+#[derive(Debug, Clone)]
+pub struct Hash {
+    /// Expected hash
     expect: String,
-    __hasher: std::marker::PhantomData<H>,
+    /// Function that calculates the hash
+    hasher: fn(&[u8]) -> Result<String, String>,
 }
-impl<H: Hasher> Hash<H> {
-    pub fn new(expect: String) -> Self {
+impl Hash {
+    /// Creates a new configuration from the expected hash
+    pub fn new<T: Hasher + 'static>(expect: &str) -> Self {
         Self {
-            expect,
-            __hasher: Default::default(),
+            expect: expect.to_string(),
+            hasher: T::compute,
         }
     }
+    /// Check if the bytes matches with the expected hash
+    /// Returns None if don't matches
     pub fn check_bytes(&self, bytes: Vec<u8>) -> Option<()> {
-        let hash = H::compute(&bytes);
+        let hash = (self.hasher)(&bytes);
         let hash = match hash {
             Result::Err(e) => {
                 error!("Failed computing hash -- {e}");
@@ -51,6 +60,8 @@ impl<H: Hasher> Hash<H> {
         }
         Some(())
     }
+    /// Check if the file matches with the expected hash
+    /// Returns None if don't matches
     pub fn check_file<P: AsRef<Path>>(&self, file: P) -> std::io::Result<Option<()>> {
         let bytes = fs::read(file.as_ref())?;
         Ok(self.check_bytes(bytes))

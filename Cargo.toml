@@ -4,7 +4,6 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-tokio = { version = "1.37", features = ["rt", "sync"] }
 ureq = "2.9"
 tracing = "0.1"
 indicatif = { version = "0.17", optional = true }
@@ -17,6 +16,7 @@ md5 = { version = "0.8.0", optional = true }
 hex = { version = "0.4.3" }
 infer = { version = "0.19.0", optional = true }
 xz2 = { version = "0.1.7", optional = true }
+tempfile = "3.20.0"
 
 [profile.release]
 opt-level = "z"           # optimiza para tamaño
@@ -31,7 +31,7 @@ tempfile = "3.20.0"
 tracing-subscriber = { version = "0.3.19", features = ["fmt"] }
 
 [features]
-default = ["sha", "md5", "zip", "targz"]
+default = ["sha", "md5", "zip", "targz", "indicatif", "tarxz"]
 sha = ["dep:sha1", "dep:sha2"]
 md5 = ["dep:md5"]
 indicatif = ["dep:indicatif"]
