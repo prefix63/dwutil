@@ -66,15 +66,10 @@ impl Decompression {
     pub fn extract(self, bytes: Vec<u8>) -> Result<(), String> {
         let dir = tempdir().map_err(|e| e.to_string())?;
         let mut decoder = (self.decoder)(bytes).map_err(|e| e.to_string())?;
+        println!("DECCRED");
         decoder.extract(dir.path().to_path_buf())?;
-        for entry in dir.path().read_dir().map_err(|e| e.to_string())? {
-            let entry = entry.map_err(|e| e.to_string())?;
-            let path = entry.path().to_string_lossy().to_string();
-            let path = path.replace(&dir.path().to_string_lossy().to_string(), "");
-            if !self.exclude.contains(&path) {
-                utils::rcopy(&entry.path(), &self.dst).map_err(|e| e.to_string())?;
-            }
-        }
+        println!("DECCREDE");
+        utils::rcopy(dir, self.dst, self.exclude).map_err(|e| e.to_string())?;
         Ok(())
     }
     /// Function to extract a file with path

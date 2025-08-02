@@ -8,6 +8,9 @@ mod hash;
 #[cfg(test)]
 mod cas;
 
+#[cfg(test)]
+mod compress;
+
 static INIT: Once = Once::new();
 
 fn init_tracing() {

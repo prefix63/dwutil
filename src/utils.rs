@@ -40,9 +40,18 @@ impl Semaphore {
 }
 
 /// Recursive copy a dir into other dir
-pub fn rcopy<A: AsRef<Path>, B: AsRef<Path>>(src: A, dst: B) -> io::Result<()> {
+pub fn rcopy<A: AsRef<Path>, B: AsRef<Path>>(
+    src: A,
+    dst: B,
+    exclude: Vec<String>,
+) -> io::Result<()> {
     let src = src.as_ref();
     let dst = dst.as_ref();
+
+    if src.is_file() {
+        fs::copy(src, dst)?;
+        return Ok(());
+    }
 
     if !dst.exists() {
         fs::create_dir_all(dst)?;
@@ -54,8 +63,17 @@ pub fn rcopy<A: AsRef<Path>, B: AsRef<Path>>(src: A, dst: B) -> io::Result<()> {
         let src_path = entry.path();
         let dest_path = dst.join(entry.file_name());
 
+        let name = src_path
+            .to_string_lossy()
+            .to_string()
+            .replace(src.to_string_lossy().to_string().as_str(), "")
+            .to_string();
+        if exclude.contains(&name) {
+            continue;
+        }
+
         if file_type.is_dir() {
-            rcopy(&src_path, &dest_path)?;
+            rcopy(&src_path, &dest_path, exclude.clone())?;
         } else if file_type.is_file() {
             fs::copy(&src_path, &dest_path)?;
         } else if file_type.is_symlink() {

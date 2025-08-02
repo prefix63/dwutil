@@ -12,7 +12,7 @@ impl super::Decoder for Gz {
         self.decoder
             .read_to_end(&mut buf)
             .map_err(|e| e.to_string())?;
-        fs::write(destination, buf).map_err(|e| e.to_string())?;
+        fs::write(destination.join("target"), buf).map_err(|e| e.to_string())?;
         Ok(())
     }
 }
