@@ -8,7 +8,7 @@ author = ["prefix63 <prefix6@outlook.es>"]
 readme = "README.md"
 repository = "https://github.com/prefix63/dwutil"
 categories = ["multimedia", "command-line-interface", "command-line-utilities"]
-keywords = ["download", "cli", "assets", "command-line-interface", "resources"]
+keywords = ["download", "cli", "assets", "resources"]
 
 [dependencies]
 # For request the resources
