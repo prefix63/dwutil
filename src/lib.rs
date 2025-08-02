@@ -66,9 +66,7 @@ impl Decompression {
     pub fn extract(self, bytes: Vec<u8>) -> Result<(), String> {
         let dir = tempdir().map_err(|e| e.to_string())?;
         let mut decoder = (self.decoder)(bytes).map_err(|e| e.to_string())?;
-        println!("DECCRED");
         decoder.extract(dir.path().to_path_buf())?;
-        println!("DECCREDE");
         utils::rcopy(dir, self.dst, self.exclude).map_err(|e| e.to_string())?;
         Ok(())
     }
