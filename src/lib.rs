@@ -154,6 +154,9 @@ impl File {
         let path = self.path();
         // Create the reader from the request and the writer in the file path
         let mut reader = request.into_reader();
+        if !path.parent().unwrap_or(&path.clone()).exists() {
+            fs::create_dir_all(&path.parent().unwrap_or(&path.clone())).map_err(|e| e.to_string())?;
+        }
         let mut writer = BufWriter::new(std::fs::File::create(&path).map_err(|e| e.to_string())?);
         // If the file does't has size, use the maximum to download all the request
         let size = if self.size == 0 { u64::MAX } else { self.size };
